@@ -51,12 +51,31 @@ def get_long_description(markdown_filepath):
         return read_contents(markdown_filepath)
 
 
+def get_cmdclass():
+    cmdclass = {}
+    try:
+        from sphinx.setup_command import BuildDoc
+    except ImportError:
+        pass
+    else:
+        cmdclass['build_sphinx'] = BuildDoc
+    return cmdclass
+
+
+name = 'django-rest-registration'
+title = 'Django REST Registration'
+author = 'Andrzej Pragacz'
+docs_copyright='2018, {author}'.format(author=author)
+version = get_version('rest_registration')
+release = version
+cmdclass = get_cmdclass()
+
 setup(
-    name='django-rest-registration',
-    version=get_version('rest_registration'),
+    name=name,
+    version=release,
     packages=find_packages(exclude=['tests.*', 'tests']),
     include_package_data=True,
-    author='Andrzej Pragacz',
+    author=author,
     author_email='apragacz@o2.pl',
     description=(
         'User registration REST API, based on django-rest-framework'
@@ -93,4 +112,15 @@ setup(
     install_requires=get_requirements('requirements.txt'),
     python_requires='>=3.4',
     url='https://github.com/apragacz/django-rest-registration',
+    cmdclass=cmdclass,
+    command_options={
+        'build_sphinx': {
+            'project': ('setup.py', title),
+            'copyright': ('setup.py', docs_copyright),
+            'version': ('setup.py', version),
+            'release': ('setup.py', release),
+            'source_dir': ('setup.py', 'docs'),
+            'build_dir': ('setup.py', 'docs/_build'),
+        },
+    },
 )
